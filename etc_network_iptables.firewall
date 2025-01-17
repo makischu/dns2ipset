@@ -1,0 +1,31 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+
+#--------------------------------------------
+#FORWARD
+
+#allow ICMP
+-A FORWARD -p icmp -j ACCEPT
+
+#allow DHCP
+-A FORWARD -p udp --sport 68 --dport 67 -j ACCEPT
+-A FORWARD -p udp --sport 67 --dport 68 -j ACCEPT
+
+#allow local connections and responses to local clients
+#includes LOCAL dns servers
+-A FORWARD -d 192.168.0.0/16 -j ACCEPT
+-A FORWARD -d 10.0.0.0/16 -j ACCEPT
+
+#allow addresses known from DNS
+-A FORWARD -m set --match-set dnsa dst -j ACCEPT
+
+#block everything else
+-A FORWARD -j DROP
+
+#--------------------------------------------
+#IN AND OUT
+#default allow
+
+COMMIT

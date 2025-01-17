@@ -1,0 +1,29 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug ens18
+#iface ens18 inet static
+auto ens18
+iface ens18 inet manual
+
+auto ens19
+iface ens19 inet manual
+
+auto br0
+iface br0 inet static
+	address 192.168.111.2/24
+	gateway 192.168.111.1
+	bridge-ports ens18 ens19
+	bridge-stp off
+	bridge-fd 0 
+	pre-up /etc/network/firewallup.sh
+	# dns-* options are implemented by the resolvconf package, if installed
+	dns-nameservers 192.168.111.1
+	dns-search guest.box
